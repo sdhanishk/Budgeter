@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for budgeter app.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "Dhanish Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^3.1.1",
+    "moment": "^2.27.0",
+    "mongodb": "^3.5.9",
+    "node-fetch": "^2.6.0",
+    "nodemon": "^2.0.4"
+  }
+}
