@@ -4,6 +4,7 @@ const database = require('../database/index');
 const utils = require('../utils'); 
 const paymentTypes = require('./payment-types');
 const accounts = require('./accounts');
+const categories = require('./categories');
 
 const MongoClient = database.MongoClient;
 const url = database.url;
@@ -54,6 +55,7 @@ async function populateAccountDetails(_expenses) {
 
   const paymentTypesIdMap = await paymentTypes.getPaymentTypesIdMap();
   const accountsIdMap = await accounts.getAccountsIdMap();
+  const categoriesIdsMap = await categories.getCategoriesIdMap();
 
   for (let expense of expenses) {
 
@@ -63,6 +65,7 @@ async function populateAccountDetails(_expenses) {
 
           item.paid_with_account = accountsIdMap[item.paid_with_account].bank;
           item.payment_type = paymentTypesIdMap[item.payment_type].type;
+          item.category = categoriesIdsMap[item.category].name;
 
       }
 

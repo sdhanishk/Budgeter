@@ -10,11 +10,7 @@ import { appRoutes } from '../utils/config';
 
 function AddPage(props) {
 
-  const [accounts, setAccounts] = useState(null);
-  const [paymentTypes, setPaymentTypes] = useState(null);
-  const [categories, setCategories] = useState(null);
-
-  const defaultItem = {
+  const _defaultItem = {
     name: "",
     category: "",
     quantity: 0,
@@ -24,15 +20,21 @@ function AddPage(props) {
     description: ""
   };
 
-  const defaultPlace = {
-    items: [defaultItem]
+  const _defaultPlace = {
+    items: [_defaultItem]
   }
 
-  const defaultExpenseData = {
-    places: [defaultPlace]
+  const _defaultExpenseData = {
+    places: [_defaultPlace]
   };
+
+  const [accounts, setAccounts] = useState(null);
+  const [paymentTypes, setPaymentTypes] = useState(null);
+  const [categories, setCategories] = useState(null);
+  const [defaultItem, setDefaultItem] = useState(_defaultItem);
+  const [defaultPlace, setDefaultPlace] = useState(_defaultPlace);
   
-  const [expenseData, setExpenseData] = useState(defaultExpenseData);
+  const [expenseData, setExpenseData] = useState(null);
 
   const history = useHistory();
 
@@ -42,26 +44,45 @@ function AddPage(props) {
 
   async function loadContent() {
 
+    const _item = {
+      ...defaultItem
+    };
+
     await axios
     .get(apis.categories)
     .then((response) => {
-        setCategories(response.data)
+        const categories = response.data;
+        _item.category = categories[0]._id;
+        setCategories(categories);
     })
     .catch((err) => console.log(err));
 
     await axios
     .get(apis.paymentTypes)
     .then((response) => {
-        setPaymentTypes(response.data)
+        const paymentTypes = response.data;
+        _item.payment_type = paymentTypes[0]._id;
+        setPaymentTypes(paymentTypes);
     })
     .catch((err) => console.log(err));
 
     await axios
     .get(apis.accounts)
     .then((response) => {
-        setAccounts(response.data)
+      const accounts = response.data;
+      _item.paid_with_account = accounts[0]._id;
+      setAccounts(accounts);
     })
     .catch((err) => console.log(err));
+
+    setDefaultItem(_item);
+    const _place = {
+      items: [_item]
+    };
+    setDefaultPlace(_place);
+    setExpenseData({
+      places: [_place]
+    });
 
   }
 
@@ -141,7 +162,27 @@ function AddPage(props) {
 
     }
 
-    const renderCategories = () => {
+    const onDropdownChanges = (e, placeIndex, index, key) => {
+
+      const _expenseData = {...expenseData};
+
+      _expenseData.places[placeIndex].items[index][key] = e.target.value;
+
+      setExpenseData(_expenseData);
+
+    }
+
+    const onDescriptionChange = (e, placeIndex, index) => {
+
+      const _expenseData = {...expenseData};
+
+      _expenseData.places[placeIndex].items[index].description = e.target.value;
+
+      setExpenseData(_expenseData);
+  
+    }
+
+    const renderCategories = (placeIndex, itemIndex) => {
 
       if(categories == null){
         return;
@@ -149,16 +190,13 @@ function AddPage(props) {
   
       return <>
         {categories.map((category, index) => {
-          // if(index == 0){
-          //   source.account = account._id;
-          // } 
           return <option value={category._id} key={'category'+index}>{category.name}</option>
         })}
       </>;
 
     }
 
-    const renderAccounts = () => {
+    const renderAccounts = (placeIndex, itemIndex) => {
 
       if(accounts == null){
         return;
@@ -166,16 +204,13 @@ function AddPage(props) {
   
       return <>
         {accounts.map((account, index) => {
-          // if(index == 0){
-          //   source.account = account._id;
-          // } 
           return <option value={account._id} key={'account'+index}>{account.bank}</option>
         })}
       </>;
 
     }
 
-    const renderPaymentTypes = () => {
+    const renderPaymentTypes = (placeIndex, itemIndex) => {
 
       if(paymentTypes == null){
         return;
@@ -183,9 +218,6 @@ function AddPage(props) {
   
       return <>
         {paymentTypes.map((paymentType, index) => {
-          // if(index == 0){
-          //   source.account = account._id;
-          // } 
           return <option value={paymentType._id} key={'paymentType'+index}>{paymentType.type}</option>
         })}
       </>;
@@ -253,7 +285,7 @@ function AddPage(props) {
               <Form.Group controlId="form.item.category">
                 <Form.Label>Category</Form.Label>
                 <Form.Control as="select" onChange={(e) => {}}>
-                  {renderCategories()}
+                  {renderCategories(placeIndex, index)}
                 </Form.Control>
               </Form.Group>
               <Form.Group controlId="form.item.quantity">
@@ -266,19 +298,19 @@ function AddPage(props) {
               </Form.Group>
               <Form.Group controlId="form.item.account">
                 <Form.Label>Account</Form.Label>
-                <Form.Control as="select" onChange={(e) => {}}>
-                  {renderAccounts()}
+                <Form.Control as="select" onChange={(e) => {onDropdownChanges(e, placeIndex, index, 'paid_with_account')}}>
+                  {renderAccounts(placeIndex, index)}
                 </Form.Control>
               </Form.Group>
               <Form.Group controlId="form.item.payment_type">
                 <Form.Label>Payment type</Form.Label>
-                <Form.Control as="select" onChange={(e) => {}}>
-                  {renderPaymentTypes()}
+                <Form.Control as="select" onChange={(e) => {onDropdownChanges(e, placeIndex, index, 'payment_type')}}>
+                  {renderPaymentTypes(placeIndex, index)}
                 </Form.Control>
               </Form.Group>
               <Form.Group controlId="form.item.description">
                 <Form.Label>Description</Form.Label>
-                <Form.Control as="textarea" onChange={(e) => {}} value={item.description}/>
+                <Form.Control as="textarea" onChange={(e) => {onDescriptionChange(e, placeIndex, index)}} value={item.description}/>
               </Form.Group>
             </Card>
           })}
