@@ -1,5 +1,11 @@
 const fastify = require('fastify')({ logger: true });
 
+fastify.register(require('fastify-cors'), { 
+  origin: '*',
+  allowedHeaders: 'OPTIONS, GET, POST, PUT, PATCH, DELETE, content-type',
+  methods: 'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+})
+
 const routes = require('./routes');
 const { forEach } = require('./routes');
 

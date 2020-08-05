@@ -1,10 +1,15 @@
 const baseUrl = "http://localhost:8080"
 
-const area = 'Asia';
-const location = 'Kolkata';
-
 const apis = {
-    time: `http://worldtimeapi.org/api/timezone/America/${area}/${location}`,
+    expenses: `${baseUrl}/expenses`,
+    incomes: `${baseUrl}/incomes`,
+    accountsIds: `${baseUrl}/accounts-ids-map`,
+    paymentTypesIds: `${baseUrl}/payment-types-ids-map`,
+    paymentTypes: `${baseUrl}/payment-types`,
+    categories: `${baseUrl}/categories`,
+    carryOver: `${baseUrl}/carry-over`,
+    accounts: `${baseUrl}/accounts`,
+    addIncome: `${baseUrl}/add-income`,
 }
 
 export {apis};

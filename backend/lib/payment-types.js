@@ -41,7 +41,16 @@ async function getPaymentTypesIdMap(request, response) {
 
 }
 
+async function getPaymentTypesIdsMapAPI(request, response) {
+
+  const paymentTypesIdsMap = await getPaymentTypesIdMap();
+
+  response.send(paymentTypesIdsMap);
+
+}
+
 module.exports = {
   getPaymentTypes,
-  getPaymentTypesIdMap
+  getPaymentTypesIdMap,
+  getPaymentTypesIdsMapAPI
 };

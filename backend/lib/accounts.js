@@ -33,6 +33,14 @@ async function getAccountSummaryByAccountId(id) {
 
 }
 
+async function getAccountsIdsMapAPI(request, response) {
+
+  const accountsIdsMap = await getAccountsIdMap();
+
+  response.send(accountsIdsMap);
+
+}
+
 async function getAccountsIdMap() {
 
   const accountsPromise = new Promise((resolve, reject) => {
@@ -60,5 +68,6 @@ async function getAccountsIdMap() {
 
 module.exports = {
   getAccounts,
-  getAccountsIdMap
+  getAccountsIdMap,
+  getAccountsIdsMapAPI
 };

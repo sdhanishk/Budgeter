@@ -14,7 +14,7 @@ function computeTotals(_income) {
   let total = 0.00;
   for (let source of income.sources) {
     
-    total += source.amount;
+    total += parseFloat(source.amount);
 
   }
 
@@ -59,7 +59,12 @@ async function getIncomes(request, response) {
 async function addIncome(request, response) {
 
   const time = await utils.getCurrentTime();
-  const datetime = moment(time).toDate().getTime();
+
+  let datetime = request.body.datetime;
+
+  if(typeof datetime === 'undefined'){
+    datetime = moment(time).toDate().getTime();
+  }
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;

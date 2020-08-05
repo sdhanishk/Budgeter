@@ -26,19 +26,19 @@ function computeTotals(_expense) {
 
       for (let itemCount = 1; itemCount <= item.quantity; itemCount++) {
 
-        item_total += item.price_per_unit;
+        item_total += parseFloat(item.price_per_unit);
 
         item.total = item_total;
 
       }
 
-      place_total += item_total;
+      place_total += parseFloat(item_total);
 
       place.total = place_total;
 
     }
 
-    sub_total += place_total;
+    sub_total += parseFloat(place_total);
 
     expense.total = sub_total;
 
@@ -89,7 +89,11 @@ async function getExpenses(request, response) {
 async function addExpense(request, response) {
 
   const time = await utils.getCurrentTime();
-  const datetime = moment(time).toDate().getTime();
+  let datetime = request.body.datetime;
+
+  if(typeof datetime === 'undefined'){
+    datetime = moment(time).toDate().getTime();
+  }
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
