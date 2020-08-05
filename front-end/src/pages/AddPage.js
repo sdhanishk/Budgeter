@@ -131,6 +131,16 @@ function AddPage(props) {
 
     }
 
+    const onNumberChange = (e, placeIndex, index, key) => {
+
+      const _expenseData = {...expenseData};
+
+      _expenseData.places[placeIndex].items[index][key] = e.target.value;
+
+      setExpenseData(_expenseData);
+
+    }
+
     const renderCategories = () => {
 
       if(categories == null){
@@ -202,6 +212,24 @@ function AddPage(props) {
 
     }
 
+    function addExpenseData(e) {
+      e.preventDefault()
+      if(typeof expenseData.datetime != 'undefined'){
+        let datetime = moment(expenseData.datetime, "DD/MM/YYYY").toDate().getTime();
+        expenseData.datetime = datetime;
+      }
+
+      axios
+        .post(apis.addExpense, expenseData)
+        .then(() => {
+            history.push(appRoutes.mainPage);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+
+    }
+
     return <Form>
       <Card style={{padding: 8, backgroundColor: '#e74c3c'}}>
         <Form.Group controlId="form.datetime">
@@ -230,11 +258,11 @@ function AddPage(props) {
               </Form.Group>
               <Form.Group controlId="form.item.quantity">
                 <Form.Label>Quantity</Form.Label>
-                <Form.Control type="number" onChange={(e) => {}} value={item.quantity}/>
+                <Form.Control type="number" onChange={(e) => {onNumberChange(e, placeIndex, index, 'quantity')}} value={item.quantity}/>
               </Form.Group>
               <Form.Group controlId="form.item.price_per_unit">
                 <Form.Label>Price/Unit</Form.Label>
-                <Form.Control type="number" onChange={(e) => {}} value={item.price_per_unit}/>
+                <Form.Control type="number" onChange={(e) => {onNumberChange(e, placeIndex, index, 'price_per_unit')}} value={item.price_per_unit}/>
               </Form.Group>
               <Form.Group controlId="form.item.account">
                 <Form.Label>Account</Form.Label>
@@ -259,6 +287,7 @@ function AddPage(props) {
         })}
         <Button type='button' onClick={() => {addPlace()}}>Add Place</Button>
       </Card>
+      <Button type='button' onClick={(e) => {addExpenseData(e)}}>Submit</Button>
     </Form>;
 
   }
@@ -317,7 +346,7 @@ function AddPage(props) {
     e.preventDefault()
     if(typeof source.datetime != 'undefined'){
       console.log(source.datetime);
-      let datetime = moment(source.datetime, "DD/MM/YYYY");
+      let datetime = moment(source.datetime, "DD/MM/YYYY").toDate().getTime();
       source.datetime = datetime;
     }
     

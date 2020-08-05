@@ -10,6 +10,7 @@ const apis = {
     carryOver: `${baseUrl}/carry-over`,
     accounts: `${baseUrl}/accounts`,
     addIncome: `${baseUrl}/add-income`,
+    addExpense: `${baseUrl}/add-expense`
 }
 
 export {apis};
